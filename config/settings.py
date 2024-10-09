@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     # Apps
-    # 'apps.main.apps.MainConfig',
+    'apps.main.apps.MainConfig',
     'apps.user.apps.UserConfig',
 ]
 
@@ -94,7 +94,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = 'config.asgi.application'
+# WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
