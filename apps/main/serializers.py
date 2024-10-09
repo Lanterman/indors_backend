@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from . import models
-
+from apps.user.serializers import MyProfileSerializer
 
 class CreateCatSerializer(serializers.ModelSerializer):
     """Create a cat serializer"""
@@ -25,3 +25,13 @@ class UpdateCatSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Cat
         fields = ["name", "age", "breed", "hairiness"]
+
+
+class ChatSerializer(serializers.ModelSerializer):
+    """A chat serializer"""
+
+    users = MyProfileSerializer(many=True)
+    
+    class Meta:
+        model = models.Chat
+        fields = ("id", "users")

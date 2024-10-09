@@ -5,4 +5,7 @@ from . import views
 urlpatterns = [
     path("cats/", views.ListCatView.as_view(), name="cat-list"),
     path("cats/<int:id>/", views.CatView.as_view(), name="cat-detail"),
+    path("chats/", views.ListChatView.as_view(), name="chat-list"),
+    path("chats/<int:id>/", views.ChatView.as_view(), name="chat-detail"),
+    path("chats/create_chat/<int:user_id>/", views.create_chat_view, name="create_chat")
 ]

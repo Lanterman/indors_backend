@@ -1,5 +1,7 @@
 from django.utils.decorators import method_decorator
-from rest_framework import generics
+from django.db.models import Count
+from django.http.response import HttpResponseRedirect
+from rest_framework import generics, decorators
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
@@ -43,3 +45,39 @@ class CatView(generics.RetrieveUpdateDestroyAPIView):
         elif self.request.method == "GET":
             return serializers.CatSerializer
  
+
+
+@method_decorator(name="get", decorator=swagger_auto_schema(tags=["chats"]))
+class ListChatView(generics.ListAPIView):
+    """Show chat list or create a chat - endpoints"""
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.ChatSerializer
+
+    def get_queryset(self):
+        return models.Chat.objects.filter(users__in=[self.request.user.id]).prefetch_related("users")
+
+
+@method_decorator(name="get", decorator=swagger_auto_schema(tags=["chats"]))
+class ChatView(generics.RetrieveAPIView):
+    """Chat endpoint"""
+
+    queryset = models.Chat.objects.all()
+    serializer_class = serializers.ChatSerializer
+    permission_classes = [IsAuthenticated, permissions.IsExistsInChat]
+    lookup_field = "id"
+
+
+@decorators.api_view(["GET"])
+def create_chat_view(request, user_id: int) -> None:
+    """Create chat if it doesn't exist"""
+
+    chats = models.Chat.objects.filter(users__in=[request.user.id, user_id]).annotate(c=Count('users')).filter(c=2)
+    if chats.count():
+        chat = chats.first()
+    else:
+        chat = models.Chat.objects.create()
+        chat.users.add(request.user.pk)
+        chat.users.add(user_id)
+
+    return HttpResponseRedirect(redirect_to=chat.get_absolute_url())

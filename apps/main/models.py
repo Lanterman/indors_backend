@@ -43,7 +43,7 @@ class Chat(models.Model):
         verbose_name_plural = "Chats"
 
     def __str__(self):
-        return self.id
+        return f"{self.id}"
 
     def get_absolute_url(self):
         return reverse('chat-detail', kwargs={'id': self.id})
@@ -62,7 +62,7 @@ class Message(models.Model):
         verbose_name_plural = "Messages"
 
     def __str__(self):
-        return self.id
+        return f"{self.id}"
 
     def get_absolute_url(self):
         return reverse('message-detail', kwargs={'id': self.id})
