@@ -35,3 +35,11 @@ class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Chat
         fields = ("id", "users")
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    """A message serializer"""
+    
+    class Meta:
+        model = models.Message
+        fields = ("id", "message", "chat_id", "user_id", "created_in")
