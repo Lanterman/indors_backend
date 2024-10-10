@@ -7,5 +7,5 @@ urlpatterns = [
     path("cats/<int:id>/", views.CatView.as_view(), name="cat-detail"),
     path("chats/", views.ListChatView.as_view(), name="chat-list"),
     path("chats/<int:id>/", views.ChatView.as_view(), name="chat-detail"),
-    path("chats/create_chat/<int:user_id>/", views.create_chat_view, name="create_chat")
+    path("chats/<int:user_id>/create_chat/", views.create_chat_view, name="create_chat")
 ]

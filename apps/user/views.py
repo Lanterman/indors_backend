@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from rest_framework import generics, response, status, views
+from rest_framework import generics, response, status, views, decorators
 from rest_framework.exceptions import ValidationError, AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
@@ -90,13 +90,13 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = models.User.objects.all()
     permission_classes = [IsAuthenticated, permissions.IsMyProfile]
-    lookup_field = "username"
+    lookup_field = "id"
 
     def get_serializer_class(self):
         if self.request.method in ("PUT", "PATCH", "POST"):
             return serializers.UpdateUserInfoSerializer
         elif self.request.method == "GET":
-            if self.kwargs and self.kwargs["username"] == self.request.user.username:
+            if self.kwargs and self.kwargs["id"] == self.request.user.id:
                 return serializers.MyProfileSerializer
             else:
                 return serializers.EnemyProfileSerializer
@@ -167,7 +167,7 @@ class ChangePasswordView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, permissions.IsAccountOwner]
     serializer_class = serializers.ChangePasswordSerializer
     http_method_names = ["put", "head", "options", "trace"]
-    lookup_field = "username"
+    lookup_field = "id"
 
     def update(self, request, *args, **kwargs):
         if not services.validate_password(request.data["old_password"], request.user.hashed_password):
@@ -208,3 +208,11 @@ class TryToResetPasswordView(generics.CreateAPIView):
         send_reset_password.delay(user.email, secret_key.key)
 
         return response.Response({"detail": "Check you email."}, status=status.HTTP_200_OK)
+
+
+@decorators.api_view(["GET"])
+@decorators.permission_classes([IsAuthenticated])
+def get_user_id_by_email(request) -> None:
+    """Get user id by email"""
+
+    return response.Response({"user_id": request.user.id}, status=status.HTTP_200_OK)

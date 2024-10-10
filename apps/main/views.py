@@ -62,13 +62,14 @@ class ListChatView(generics.ListAPIView):
 class ChatView(generics.RetrieveAPIView):
     """Chat endpoint"""
 
-    queryset = models.Chat.objects.all()
+    queryset = models.Chat.objects.all().prefetch_related("messages")
     serializer_class = serializers.ChatSerializer
     permission_classes = [IsAuthenticated, permissions.IsExistsInChat]
     lookup_field = "id"
 
 
 @decorators.api_view(["GET"])
+@decorators.permission_classes([IsAuthenticated])
 def create_chat_view(request, user_id: int) -> None:
     """Create chat if it doesn't exist"""
 
