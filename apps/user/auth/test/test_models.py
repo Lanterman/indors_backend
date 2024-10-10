@@ -13,7 +13,7 @@ class TestJWTToken(APITestCase):
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-        cls.user = User.objects.get(id=3)
+        cls.user = User.objects.get(id=1)
         cls.token = auth_models.JWTToken.objects.get(id=1)
     
 

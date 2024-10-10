@@ -11,9 +11,9 @@ class TestGetOrNoneFunction(APITestCase):
     fixtures = ["./config/test/test_data.json"]
 
     def test_existing_user(self):
-        response = db_queries.get_or_none("admin@mail.ru")
+        response = db_queries.get_or_none("ofpuw@mailto.plus")
         self.assertIsNotNone(response, response)
-        assert response.__str__() == "admin", response.__str__()
+        assert response.__str__() == "lanterman", response.__str__()
         assert response.is_superuser == True, response.is_superuser
     
     def test_non_existent_user(self):
@@ -29,11 +29,11 @@ class TestGetUserByEmailFunction(APITestCase):
     def test_existing_user(self):
         response = db_queries.get_user_by_email("admin@mail.ru")
         self.assertIsNotNone(response, response)
-        assert response.__str__() == "admin", response.__str__()
+        assert response.__str__() == "lanterman", response.__str__()
         assert response.is_superuser == True, response.is_superuser
     
     def test_non_existent_user(self):
-        response = db_queries.get_user_by_email("admin1@mail.ru")
+        response = db_queries.get_user_by_email("ofpuw@mailto.plus")
         self.assertIsNone(response, response)
 
 
