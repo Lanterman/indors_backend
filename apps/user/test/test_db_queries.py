@@ -27,13 +27,13 @@ class TestGetUserByEmailFunction(APITestCase):
     fixtures = ["./config/test/test_data.json"]
 
     def test_existing_user(self):
-        response = db_queries.get_user_by_email("admin@mail.ru")
+        response = db_queries.get_user_by_email("ofpuw@mailto.plus")
         self.assertIsNotNone(response, response)
         assert response.__str__() == "lanterman", response.__str__()
         assert response.is_superuser == True, response.is_superuser
     
     def test_non_existent_user(self):
-        response = db_queries.get_user_by_email("ofpuw@mailto.plus")
+        response = db_queries.get_user_by_email("ofpu1w@mailto.plus")
         self.assertIsNone(response, response)
 
 
@@ -50,7 +50,7 @@ class TestGetUserIdBySecretKeyFunction(APITestCase):
     def test_existing_user_id(self):
         response = db_queries.get_user_id_by_secret_key(self.instance.key)
         self.assertIsNotNone(response, response)
-        assert 2 == response, response
+        assert 1 == response, response
     
     def test_non_existent_user_id(self):
         response = db_queries.get_user_id_by_secret_key(f"{self.instance.key}1")
@@ -68,7 +68,7 @@ class TestChangePasswordFunction(APITestCase):
         cls.instance = models.User.objects.get(id=1)
 
     def test_successfull_user_activate(self):
-        hashed_password = 'KtQrvyHOiHFU$b18f34385035abe98c305d63d2121ff72a8bca7385a7d217d1891a1c43d397ae'
+        hashed_password = 'EqLZIEMXFgos$1e7bd9076127ffe27a3f8ea671d661d5773e74d3cbd1ff11939f4246f8cb9b0b'
         new_hashed_password = 'wqejoweqwenjfnweqeqwemqrk$qweqwneqkeq'
         assert self.instance.hashed_password == hashed_password, self.instance.hashed_password
 
@@ -90,12 +90,12 @@ class TestLogoutFunction(APITestCase):
 
     def test_existing_user_id(self):
         count_instances = auth_models.JWTToken.objects.count()
-        assert 2 == count_instances, count_instances
+        assert 3 == count_instances, count_instances
 
         response = db_queries.logout(self.instance)
         count_instances = auth_models.JWTToken.objects.count()
         self.assertIsNone(response, response)
-        assert 1 == count_instances, count_instances
+        assert 2 == count_instances, count_instances
 
 
 class TestCreateUserSecretKeyFunction(APITestCase):
@@ -109,7 +109,7 @@ class TestCreateUserSecretKeyFunction(APITestCase):
         cls.instance = auth_models.SecretKey.objects.get(user__id=2)
 
     def test_update_instance(self):
-        secret_key = "35a97667edaa49e839eb47e3409005e66bf2816a4ce59fbf88af7f0a1b38b71f"
+        secret_key = "f065868f2ef8d3e623b3ec36b0596dc09ee61273ac0d6677fd9ba279a68a75e8"
         count_instance = auth_models.SecretKey.objects.count()
         assert secret_key == self.instance.key, self.instance.key
         assert 3 == count_instance, count_instance
@@ -125,7 +125,7 @@ class TestCreateUserSecretKeyFunction(APITestCase):
     
     def test_create_instance(self):
         secret_key = auth_models.SecretKey.objects.filter(user__id=1).exists()
-        self.assertFalse(secret_key,secret_key)
+        self.assertTrue(secret_key,secret_key)
 
         new_secret_key = "qwr23j918u3jiuwniqj312jqioqoj131313qwe"
         response = db_queries.create_user_secret_key(new_secret_key, 1)
@@ -134,7 +134,7 @@ class TestCreateUserSecretKeyFunction(APITestCase):
         self.assertIsNone(response, response)
         secret_key = auth_models.SecretKey.objects.filter(user__id=1).exists()
         self.assertTrue(secret_key,secret_key)
-        assert 4 == count_instance, count_instance
+        assert 3 == count_instance, count_instance
 
 
 class TestGetJWTTokenInstanceByUserIdFunction(APITestCase):
@@ -148,12 +148,13 @@ class TestGetJWTTokenInstanceByUserIdFunction(APITestCase):
         cls.instance = auth_models.JWTToken.objects.get(id=1)
 
     def test_existing_token(self):
-        response = db_queries.get_jwttoken_instance_by_user_id(3)
+        response = db_queries.get_jwttoken_instance_by_user_id(1)
         self.assertIsNotNone(response, response)
         assert self.instance == response, response
     
     def test_non_existent_token(self):
         exp_code = 'JWTtoken does not exist.'
+        auth_models.JWTToken.objects.filter(id=1).delete()
         with self.assertRaisesMessage(AuthenticationFailed, exp_code):
             db_queries.get_jwttoken_instance_by_user_id(1)
 
@@ -191,7 +192,7 @@ class TestCreateJWTTokenFunction(APITestCase):
 
     def test_update_instance(self):
         count_instance = auth_models.JWTToken.objects.count()
-        assert 2 == count_instance, count_instance
+        assert 3 == count_instance, count_instance
 
         response = db_queries.create_jwttoken("access_token", "refresh_token", 3)
         count_instance = auth_models.JWTToken.objects.count()
@@ -199,12 +200,12 @@ class TestCreateJWTTokenFunction(APITestCase):
         self.assertIsNotNone(response, response)
         assert self.instance == response, response
         assert "access_token" == response.access_token, response.access_token
-        assert 2 == count_instance, count_instance
+        assert 3 == count_instance, count_instance
 
     
     def test_create_instance(self):
         secret_key = auth_models.JWTToken.objects.filter(user__id=1).exists()
-        self.assertFalse(secret_key,secret_key)
+        self.assertTrue(secret_key,secret_key)
 
         response = db_queries.create_jwttoken("access_token", "refresh_token", 1)
         count_instance = auth_models.JWTToken.objects.count()

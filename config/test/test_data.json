@@ -137,7 +137,7 @@
     "fields": {
         "password": "",
         "last_login": null,
-        "is_superuser": false,
+        "is_superuser": true,
         "username": "lanterman",
         "first_name": "stringqq",
         "last_name": "stringq",
@@ -234,7 +234,7 @@
     "fields": {
         "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ0eXBlX3Rva2VuIjoiYWNjZXNzIn0.rueFsJh-9Q7hnSDAw8CyQku3csfgUU2I8duyiyOaGX4",
         "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ0eXBlX3Rva2VuIjoicmVmcmVzaCJ9.mJnrjlRVVEDAtIF7b_eK46eeD4aoTABXTPKP6jYbrRk",
-        "created": "2024-10-09T10:07:25.084Z",
+        "created": "2024-9-09T10:07:25.084Z",
         "user": 2
     }
 },

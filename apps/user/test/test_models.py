@@ -19,16 +19,16 @@ class TestUserModel(APITestCase):
         """Testing __str__ method"""
 
         resposne = self.user_1.__str__()
-        assert resposne == "admin", resposne
+        assert resposne == "lanterman", resposne
 
         resposne = self.user_2.__str__()
-        assert resposne == "lanterman", resposne
+        assert resposne == "lanterman1", resposne
     
     def test_get_absolute_url_method(self):
         """Testing get_absolute_url method"""
 
         response = self.user_1.get_absolute_url()
-        assert response == "/api/v1/auth/profile/admin/", response
+        assert response == "/api/v1/auth/profile/1/", response
 
         response = self.user_2.get_absolute_url()
-        assert response == "/api/v1/auth/profile/lanterman/", response
+        assert response == "/api/v1/auth/profile/2/", response

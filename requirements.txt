@@ -6,9 +6,11 @@ Automat==24.8.1
 beautifulsoup4==4.12.3
 billiard==4.2.1
 celery==5.4.0
+certifi==2024.8.30
 cffi==1.17.1
 channels==4.1.0
 channels-redis==4.2.0
+charset-normalizer==3.4.0
 click==8.1.7
 click-didyoumean==0.3.1
 click-plugins==1.1.1
@@ -28,6 +30,7 @@ incremental==24.7.2
 inflection==0.5.1
 iniconfig==2.0.0
 kombu==5.4.2
+more-itertools==10.5.0
 msgpack==1.1.0
 opengraph_py3==0.71
 packaging==24.1
@@ -35,6 +38,7 @@ pillow==10.4.0
 pluggy==1.5.0
 prompt_toolkit==3.0.48
 psycopg2==2.9.9
+py==1.11.0
 pyasn1==0.6.1
 pyasn1_modules==0.4.1
 pycparser==2.22
@@ -43,11 +47,12 @@ pyOpenSSL==24.2.1
 pytest==8.3.3
 pytest-asyncio==0.24.0
 pytest-django==4.9.0
-python-dateutil==2.9.0.post0
+python-dateutil==2.8.2
 python-dotenv==1.0.1
 pytz==2024.2
 PyYAML==6.0.2
 redis==5.0.8
+requests==2.32.3
 service-identity==24.1.0
 setuptools==75.1.0
 six==1.16.0
@@ -58,6 +63,7 @@ txaio==23.1.1
 typing_extensions==4.12.2
 tzdata==2024.2
 uritemplate==4.1.1
+urllib3==2.2.3
 vine==5.1.0
 wcwidth==0.2.13
 zope.interface==7.0.3

@@ -23,7 +23,7 @@ class TestIsMyProfilePermission(APITestCase):
 
         cls.request = APIRequestFactory()
         cls.client = APIClient()
-        cls.url = reverse('user-detail', kwargs={"username": cls.user_1.username})
+        cls.url = reverse('user-detail', kwargs={"id": cls.user_1.id})
         
         cls.type_token = settings.JWT_SETTINGS["AUTH_HEADER_TYPES"]
 
