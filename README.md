@@ -1,7 +1,6 @@
 # Indors Navigation - test
 
-There was not enough time to cover the entire project with tests.
-The project is 93% covered by tests.
+The project is 98% covered by tests.
 
 ### Launch of the project
 

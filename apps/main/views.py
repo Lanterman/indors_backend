@@ -46,7 +46,6 @@ class CatView(generics.RetrieveUpdateDestroyAPIView):
             return serializers.CatSerializer
  
 
-
 @method_decorator(name="get", decorator=swagger_auto_schema(tags=["chats"]))
 class ListChatView(generics.ListAPIView):
     """Show chat list or create a chat - endpoints"""

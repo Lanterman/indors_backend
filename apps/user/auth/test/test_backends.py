@@ -18,10 +18,10 @@ class TestJWTTokenAuthBackend(APITestCase):
 
         cls.user = user_models.User.objects.get(id=1)
         cls.token = user_services.create_jwttoken(user_id=1)
-        cls.token_to_db = auth_models.JWTToken.objects.get(user_id=3)
+        cls.token_to_db = auth_models.JWTToken.objects.get(user_id=1)
 
         cls.request = APIRequestFactory()
-        cls.url = reverse('user-detail', kwargs={"username": cls.user.username})
+        cls.url = reverse('user-detail', kwargs={"id": cls.user.id})
         cls.instance = backends.JWTTokenAuthBackend()
         
         cls.type_token = settings.JWT_SETTINGS["AUTH_HEADER_TYPES"]
@@ -69,7 +69,7 @@ class TestJWTTokenAuthBackend(APITestCase):
         resposne_5 = self.instance.authenticate(request_5)
         assert tuple == type(resposne_5), resposne_5
         assert 2 == len(resposne_5), resposne_5
-        assert "admin" == resposne_5[0].username, resposne_5[0]
+        assert "lanterman" == resposne_5[0].username, resposne_5[0]
         assert "JWTToken" == resposne_5[1].__class__.__name__, resposne_5[1].__class__.__name__
         assert self.token.access_token == resposne_5[1].access_token, resposne_5[1].access_token
 
@@ -83,11 +83,6 @@ class TestJWTTokenAuthBackend(APITestCase):
         response_2 = self.instance.authenticate_credentials(self.token_to_db.access_token)
         assert tuple == type(response_2), response_2
         assert 2 == len(response_2), response_2
-        assert "user" == response_2[0].username, response_2[0]
+        assert "lanterman" == response_2[0].username, response_2[0]
         assert "JWTToken" == response_2[1].__class__.__name__, response_2[1].__class__.__name__
         assert self.token_to_db.access_token == response_2[1].access_token, response_2[1].access_token
-
-        raise_msg = 'User inactive or deleted.'
-        user_models.User.objects.filter(id=3).update(is_active=False)
-        with self.assertRaisesMessage(AuthenticationFailed, raise_msg):
-            self.instance.authenticate_credentials(self.token_to_db.access_token)

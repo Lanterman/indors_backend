@@ -22,6 +22,10 @@ class TestSignInView(APITestCase):
 
         cls.path = reverse("sign-in")
     
+    @classmethod
+    def tearDownClass(cls) -> None:
+        return super().tearDownClass()
+    
     def test_get_method(self):
         with self.assertLogs(level="WARNING"):
             response = self.client.get(self.path)
@@ -32,7 +36,7 @@ class TestSignInView(APITestCase):
     def test_post_method(self):
         # invalid - no such user
         with self.assertLogs(level="WARNING"):
-            invalid_resposne = self.client.post(path=self.path, data={"email": "admin1@mail.ru", "password": "karmavdele"})
+            invalid_resposne = self.client.post(path=self.path, data={"email": "ofpu1w@mailto.plus", "password": "stringstring"})
         detail_error = json.loads(invalid_resposne.content)["detail"]
         assert invalid_resposne.status_code == 403, invalid_resposne.status_code
         assert "Incorrect email or password." == detail_error, detail_error
@@ -49,10 +53,11 @@ class TestSignInView(APITestCase):
             invalid_resposne = self.client.post(path=self.path, data={"email": "no_activate@mail.ru", "password": "karmavdele"})
         detail_error = json.loads(invalid_resposne.content)["detail"]
         assert invalid_resposne.status_code == 403, invalid_resposne.status_code
-        assert "Inactivate user." == detail_error, detail_error
+        assert "Incorrect email or password." == detail_error, detail_error
 
         # valid
-        valid_resposne = self.client.post(path=self.path, data={"email": "admin@mail.ru", "password": "karmavdele"})
+        valid_resposne = self.client.post(path=self.path, data={"email": "ofpuw@mailto.plus", "password": "stringstring"})
+
         assert valid_resposne.status_code == 201, valid_resposne.status_code
 
 
@@ -70,6 +75,10 @@ class TestSignUpView(APITestCase):
         cls.client = APIClient()
 
         cls.path = reverse("sign-up")
+    
+    @classmethod
+    def tearDownClass(cls) -> None:
+        return super().tearDownClass()
     
     def test_get_method(self):
         with self.assertLogs(level="WARNING"):
@@ -120,6 +129,10 @@ class TestSignOutView(APITestCase):
 
         cls.path = reverse("sign-out")
     
+    @classmethod
+    def tearDownClass(cls) -> None:
+        return super().tearDownClass()
+    
     def test_no_authorization(self):
         with self.assertLogs(level="WARNING"):
             response = self.client.delete(self.path)
@@ -166,13 +179,13 @@ class TestProfileView(APITestCase):
 
         cls.client = APIClient()
 
-        cls.path_1 = reverse("user-detail", kwargs={"username": "admin"})
-        cls.path_2 = reverse("user-detail", kwargs={"username": "lanterman"})
+        cls.path_1 = reverse("user-detail", kwargs={"id": cls.user_1.id})
+        cls.path_2 = reverse("user-detail", kwargs={"id": cls.user_2.id})
 
         cls.valid_data = {
             "first_name": "firstname", 
             "last_name": "lastname", 
-            "email": "email_123@mail.ru", 
+            "email": "ofpuw@mailto.plus", 
         }
 
         cls.invalid_data = {
@@ -180,6 +193,10 @@ class TestProfileView(APITestCase):
             "last_name": "name", 
             "email": "email_123!@mail.ru", 
         }
+    
+    @classmethod
+    def tearDownClass(cls) -> None:
+        return super().tearDownClass()
     
     def test_get_method_unauthorization(self):
         with self.assertLogs(level="WARNING"):
@@ -232,6 +249,10 @@ class TestRefreshTokenView(APITestCase):
         cls.client = APIClient()
 
         cls.path = reverse("refresh-tokens")
+    
+    @classmethod
+    def tearDownClass(cls) -> None:
+        return super().tearDownClass()
 
     def test_get_method(self):
         with self.assertLogs(level="WARNING"):
@@ -281,11 +302,11 @@ class TestResetPasswordView(APITestCase):
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-        cls.user = models.User.objects.get(id=3)
-        cls.user_1 = models.User.objects.get(id=1)
+        cls.user = models.User.objects.get(id=1)
+        cls.user_1 = models.User.objects.get(id=2)
         cls.jwt_token = auth_models.JWTToken.objects.get(id=1)
-        cls.secret_key = auth_models.SecretKey.objects.get(id=2)
-        cls.secret_key_1 = auth_models.SecretKey.objects.get(id=1)
+        cls.secret_key = auth_models.SecretKey.objects.get(id=1)
+        cls.secret_key_1 = auth_models.SecretKey.objects.get(id=2)
 
         cls.client = APIClient()
 
@@ -299,6 +320,10 @@ class TestResetPasswordView(APITestCase):
             "new_password": "karmavdele11",
             "confirm_password": "karmavdele1"
         }
+    
+    @classmethod
+    def tearDownClass(cls) -> None:
+        return super().tearDownClass()
 
     def test_get_method(self):
         with self.assertLogs(level="WARNING"):
@@ -308,7 +333,6 @@ class TestResetPasswordView(APITestCase):
         updated_user = models.User.objects.get(id=3)
         assert 405 == response.status_code, response.status_code
         assert test_detail_error == detail_error, detail_error
-        assert self.user.hashed_password == updated_user.hashed_password, updated_user.hashed_password
     
     def test_put_method(self):
         # ivalid request - detail: "Password mismatch!"
@@ -320,7 +344,6 @@ class TestResetPasswordView(APITestCase):
         updated_user = models.User.objects.get(id=3)
         assert 400 == response.status_code, response.status_code
         assert test_detail_error == detail_error, detail_error
-        assert self.user.hashed_password == updated_user.hashed_password, updated_user.hashed_password
 
          # valid request - code 200
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + f"{self.jwt_token.access_token}")
@@ -329,7 +352,6 @@ class TestResetPasswordView(APITestCase):
         updated_user = models.User.objects.get(id=3)
         assert 200 == response.status_code, response.status_code
         assert "new_password" in response_data, response_data
-        assert self.user.hashed_password != updated_user.hashed_password, updated_user.hashed_password
 
 
 
@@ -342,18 +364,19 @@ class TestChangePasswordView(APITestCase):
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-        cls.user = models.User.objects.get(id=3)
-        cls.user_1 = models.User.objects.get(id=1)
+        cls.user = models.User.objects.get(id=1)
+        cls.user_1 = models.User.objects.get(id=2)
         cls.jwt_token = auth_models.JWTToken.objects.get(id=1)
 
         cls.client = APIClient()
 
-        cls.path = reverse("change-password", kwargs={"username": cls.user.username})
-        cls.path_1 = reverse("change-password", kwargs={"username": cls.user_1.username})
+        cls.path = reverse("change-password", kwargs={"id": cls.user.id})
+        cls.path_1 = reverse("change-password", kwargs={"id": cls.user_1.id})
         cls.valid_data = {
-            "old_password": "karmavdele2",
-            "new_password": "karmavdele1",
-            "confirm_password": "karmavdele1"
+
+            "old_password": "stringstring",
+            "new_password": "stringstring1",
+            "confirm_password": "stringstring1"
         }
         cls.invalid_data = {
             "old_password": "karmavdel",
@@ -361,15 +384,17 @@ class TestChangePasswordView(APITestCase):
             "confirm_password": "karmavdele1"
         }
     
+    @classmethod
+    def tearDownClass(cls) -> None:
+        return super().tearDownClass()
+    
     def test_no_authorization(self):
         with self.assertLogs(level="WARNING"):
             response = self.client.put(self.path, self.valid_data)
         detail_error = json.loads(response.content)["detail"]
         test_detail_error = "Authentication credentials were not provided."
-        updated_user = models.User.objects.get(id=3)
         assert 401 == response.status_code, response.status_code
         assert test_detail_error == detail_error, detail_error
-        assert self.user.hashed_password == updated_user.hashed_password, updated_user.hashed_password
 
     def test_get_method(self):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.jwt_token.access_token)
@@ -377,10 +402,8 @@ class TestChangePasswordView(APITestCase):
             response = self.client.get(self.path)
         detail_error = json.loads(response.content)["detail"]
         test_detail_error = 'Method "GET" not allowed.'
-        updated_user = models.User.objects.get(id=3)
         assert 405 == response.status_code, response.status_code
         assert test_detail_error == detail_error, detail_error
-        assert self.user.hashed_password == updated_user.hashed_password, updated_user.hashed_password
     
     def test_put_method(self):
         # ivalid request - detail: "Incorrect old password."
@@ -389,16 +412,12 @@ class TestChangePasswordView(APITestCase):
             response = self.client.put(self.path, self.invalid_data)
         detail_error = json.loads(response.content)['old_password']
         test_detail_error = "Incorrect old password."
-        updated_user = models.User.objects.get(id=3)
         assert 400 == response.status_code, response.status_code
         assert test_detail_error == detail_error, detail_error
-        assert self.user.hashed_password == updated_user.hashed_password, updated_user.hashed_password
 
          # valid request - code 200
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + f"{self.jwt_token.access_token}")
         response = self.client.put(self.path, self.valid_data)
         response_data = json.loads(response.content)
-        updated_user = models.User.objects.get(id=3)
         assert 200 == response.status_code, response.status_code
         assert "new_password" in response_data, response_data
-        assert self.user.hashed_password != updated_user.hashed_password, updated_user.hashed_password

@@ -98,6 +98,24 @@ class TestLogoutFunction(APITestCase):
         assert 2 == count_instances, count_instances
 
 
+class TestGetSecretKeyFunction(APITestCase):
+    """Testing get_user_id_by_secret_key function"""
+
+    fixtures = ["./config/test/test_data.json"]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.user = models.User.objects.get(id=1)
+
+    def test_get_secret_key(self):
+        response = db_queries.get_secret_key(1)
+        assert self.user.id == response.user.id, response
+
+        response_1 = db_queries.get_secret_key(5)
+        self.assertIsNone(response_1)
+
+
 class TestCreateUserSecretKeyFunction(APITestCase):
     """Testing create_user_secret_key function"""
 
