@@ -4,9 +4,14 @@ The project is 98% covered by tests.
 
 ### Launch of the project
 
-#### 1) Clone repositories
+#### 1) Clone repositories in 1 directory
 ```
-git clone https://github.com/Lanterman/indors.git
+https://github.com/Lanterman/indors_backend.git
+https://github.com/Lanterman/indors_frontend.git
+```
+#### 2) Go to the 'indors_backend' directory
+```
+cd indors_backend
 ```
 #### 2) Create and run docker-compose
 ```
@@ -26,7 +31,10 @@ docker exec -it <backend_container_ID> python manage.py createsuperuser
     ```
     http://127.0.0.1:8000/api/v1/
     ```
-
+ - ##### to launch the project:
+    ```
+    http://localhost:3000/
+    ```
 
 P.S.
 To test the functionality of the "Celery Task" and "/auth/profile/try_to_reset_password/" endpoint, you need to set the following environment variables:
